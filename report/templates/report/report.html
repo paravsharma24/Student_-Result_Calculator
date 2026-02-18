@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Premium Student Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'report/css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
+<div class="dashboard">
+    <button class="toggle" onclick="toggleMode()">🌙</button>
+
+    <h1>Premium Student Dashboard By Parav</h1>
+
+    <form method="post" onsubmit="prepareSubjects()">
+        {% csrf_token %}
+
+        <div>
+            <label>Student Name</label>
+            {{ form.studentName }}
+        </div>
+
+        <div>
+            <label>Roll Number</label>
+            {{ form.rollNumber }}
+        </div>
+
+        <div>
+            <label>Class</label>
+            {{ form.standard }}
+        </div>
+
+        <div>
+            <label>Each Subject Out Of</label>
+            {{ form.outOff }}
+        </div>
+
+        <div class="subjects-section">
+            <label>Subjects</label>
+            <div id="subjectsContainer"></div>
+            <button type="button" onclick="addSubject()">+ Add Subject</button>
+        </div>
+
+        <input type="hidden" name="subjects" id="subjectsInput">
+
+        <button type="submit">Generate Report</button>
+    </form>
+</div>
+
+<!-- Overlay -->
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<!-- Modal -->
+<div class="modal" id="reportModal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Student Performance Report</h2>
+            <span class="close-btn" onclick="closeModal()">×</span>
+        </div>
+
+        {% if data %}
+        <div class="report-body">
+
+            <div class="student-info">
+                <div>
+                    <span class="label">Name</span>
+                    <span class="value">{{ data.student.studentName }}</span>
+                </div>
+                <div>
+                    <span class="label">Roll No</span>
+                    <span class="value">{{ data.student.rollNumber }}</span>
+                </div>
+                <div>
+                    <span class="label">Class</span>
+                    <span class="value">{{ data.student.standard }}</span>
+                </div>
+            </div>
+
+            <div class="subjects-grid">
+                {% for subject, mark in data.subjects.items %}
+                <div class="subject-card">
+                    <h4>{{ subject }}</h4>
+                    <p>{{ mark }} Marks</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="performance-section">
+                <div class="percentage-display">
+                    <span id="percentageNumber">0%</span>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <div class="result-badge {{ data.result|lower }}">
+                    {{ data.result }}
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- Main JS -->
+<script src="{% static 'report/js/main.js' %}"></script>
+
+<!-- Auto open modal AFTER JS loads -->
+{% if data %}
+<script>
+    window.addEventListener("load", function() {
+        openModal({{ data.percentage|floatformat:0 }}, "{{ data.result }}");
+    });
+</script>
+{% endif %}
+
+</body>
+</html>
