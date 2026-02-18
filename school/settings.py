@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = False
 
 # Allow Render domain (safe temporary setup)
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["student-result-calculator.onrender.com"]
 
 
 # Application definition
