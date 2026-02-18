@@ -3,20 +3,27 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key secret in production!
+
+# =========================
+# SECURITY
+# =========================
+
 SECRET_KEY = os.environ.get(
     "SECRET_KEY",
     "django-insecure-temp-key-change-this"
 )
 
-# Production
 DEBUG = False
 
-# Allow Render domain (safe temporary setup)
-ALLOWED_HOSTS = ["student-result-calculator.onrender.com"]
+ALLOWED_HOSTS = [
+    "student-result-calculator.onrender.com",
+]
 
 
-# Application definition
+# =========================
+# APPLICATIONS
+# =========================
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -27,9 +34,17 @@ INSTALLED_APPS = [
     'report',
 ]
 
+
+# =========================
+# MIDDLEWARE
+# =========================
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Added
+
+    # WhiteNoise (must be directly after SecurityMiddleware)
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -38,7 +53,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'school.urls'
+
+
+# =========================
+# TEMPLATES
+# =========================
 
 TEMPLATES = [
     {
@@ -55,9 +76,14 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'school.wsgi.application'
 
-# Database
+
+# =========================
+# DATABASE
+# =========================
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -65,17 +91,25 @@ DATABASES = {
     }
 }
 
-# Internationalization
+
+# =========================
+# STATIC FILES
+# =========================
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# =========================
+# DEFAULTS
+# =========================
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
-# Static files
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# WhiteNoise static config
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
